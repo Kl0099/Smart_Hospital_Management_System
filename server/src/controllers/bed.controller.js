@@ -1,6 +1,6 @@
 import Bed from "../models/bed.model.js";
 
-export const createBed = async (req, res) => {
+export const createBed = async (req, res) => {  
   const bed = await Bed.create(req.body);
   res.status(201).json(bed);
 };

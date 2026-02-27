@@ -42,13 +42,15 @@ const PORT = process.env.PORT || 5000;
 // Connect DB and Start Server
       console.log(`🚀 Server running on http://localhost:${PORT}.....`);
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect("mongodb+srv://anujpal:Hanuman12@cluster0.9odhyfh.mongodb.net/")
   .then(() => {
     console.log("✅ MongoDB Connected");
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-    });
   })
   .catch((err) => {
-    console.error("❌ DB Connection successfully:");
+    console.log(process.env.MONGO_URI)
+    console.error("❌ DB connection error:", err);
+  });
+
+  app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
