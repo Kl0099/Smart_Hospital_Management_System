@@ -1,21 +1,25 @@
 import React from 'react';
-import Navbar from '../Components/Home/Navbar';
 import HeroSection from '../Components/Home/HeroSection';
 import Welcome from '../Components/Home/Welcome';
 import Service from '../Components/Home/Service';
-import HomeSection from '../Components/Home/HomeSection';
-import Footer from '../Components/Home/Footer';
+import Specialty_Section from '../Components/Home/Specialty_Section';
+import Appointment_Section from '../Components/Home/Appointment_Section';
+import Doctors_Section from '../Components/Home/Doctors_Section';
+import News_Section from '../Components/Home/News_Section';
+import Contact_Section from '../Components/Home/Contact_Section';
 
 const Home = () => {
   return (
     <div className='overflow-hidden'>
-      <Navbar/>
       <HeroSection/>
       <div className=" w-[80%]]">
         <Welcome/>
       <Service/>
-      <HomeSection/>
-      <Footer/>
+      <Specialty_Section/>
+      <Appointment_Section/>
+      <Doctors_Section/>
+      <News_Section/>
+      <Contact_Section/>
       
       </div>
     </div>

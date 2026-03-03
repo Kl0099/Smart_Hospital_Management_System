@@ -5,6 +5,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
+import { Link } from 'react-router-dom';
 
 
 
@@ -46,12 +47,12 @@ const Navbar = () => {
          <div className=' flex  justify-between items-center font-semibold px-[200px] py-4 text-gray-200 bg-blue-900'>
             <div className=' '>
                 <ul className=' flex gap-8'>
-                    <li className=' cursor-pointer hover:text-gray-300'>Home</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>About us</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>Services</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>Doctors</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>News</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>Contact</li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/">Home</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/about">About us</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/services">Services</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/doctors">Doctors</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/news">News</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/contact">Contact</Link></li>
                 </ul>                  
             </div>
             <div className=' flex items-center gap-8'>
