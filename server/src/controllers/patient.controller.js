@@ -3,33 +3,14 @@ import Patient from "../models/patient.model.js";
 
 const addPatient = async (req, res) => {
   try {
-    const {
-      userId,
-      age,
-      gender,
-      dateOfBirth,
-      address,
-      city,
-      state,
-      pincode,
-      bloodGroup,
-      emergencyContactName,
-      emergencyContact,
-    } = req.body;
-    if (
-      !userId ||
-      !age ||
-      !gender ||
-      !dateOfBirth ||
-      !address ||
-      !city ||
-      !state ||
-      !pincode ||
-      !bloodGroup ||
-      !emergencyContactName ||
-      !emergencyContactPhone
-    ) {
-      return res.status(400).json({ message: "All fields are required!" });
+    const role = req.user?.role;
+    const { userId } = req.body;
+    if (role === "PATIENT") {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
+    if (!userId) {
+      return res.status(404).json({ message: "User Id is required!" });
     }
 
     const user = await User.findById(userId);
@@ -39,8 +20,10 @@ const addPatient = async (req, res) => {
 
     const existingPatient = await Patient.findOne({ userId });
     if (existingPatient) {
-      return res.state(400).json({ message: "Patient already exist" });
+      return res.status(400).json({ message: "Patient already exist" });
     }
+    const patient = await Patient.create(req.body);
+    res.json({ message: "Patient added successfully!" });
   } catch (error) {
     res
       .status(500)
@@ -50,7 +33,12 @@ const addPatient = async (req, res) => {
 
 const getPatients = async (req, res) => {
   try {
-    const patients = await User.find({ role: "PATIENT" });
+    const role = req.user?.role;
+    if (role === "PATIENT") {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
+    const patients = await Patient.find({}).populate("userId", "-password");
     res.json(patients);
   } catch (error) {
     res
@@ -61,12 +49,23 @@ const getPatients = async (req, res) => {
 
 const getPatientById = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params?.id;
+    const role = req.user?.role;
+    const id = req.user?.id;
+    console.log(id);
+
+    if (role === "PATIENT" && userId !== id) {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
     if (!userId) {
       return res.status(400).json({ message: "User ID is required!" });
     }
 
-    const patient = await User.findById(userId);
+    const patient = await Patient.find({ userId }).populate(
+      "userId",
+      "-password",
+    );
     res.json(patient);
   } catch (error) {
     res
@@ -77,18 +76,18 @@ const getPatientById = async (req, res) => {
 
 const updatePatient = async (req, res) => {
   try {
-    if (
-      age < 0 ||
-      (emergencyContactPhone != null &&
-        (typeof emergencyContactPhone != "number" ||
-          emergencyContactPhone.length() != 10))
-    ) {
-      return res.status(400).json({ message: "Invalid input!" });
+    const role = req.user.role;
+    const id = req.user.id;
+    const userId = req.params?.id;
+
+    if (role === "PATIENT" && userId != id) {
+      return res.status(403).json({ message: "Access denied!" });
     }
 
-    const patient = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const patient = await Patient.findOne({ userId });
+    patient.set(req.body);
+    await patient.save();
+
     res.json(patient);
   } catch (error) {
     res
@@ -99,8 +98,12 @@ const updatePatient = async (req, res) => {
 
 const deletePatient = async (req, res) => {
   try {
-    const patient = await User.findByIdAndDelete(req.params.id);
-    res.json(patient);
+    const role = req.user?.role;
+    if (role === "PATIENT") {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+    const patient = await Patient.findByIdAndDelete(req.params?.id);
+    res.json("Patient deleted successfully!");
   } catch (error) {
     res
       .status(500)
@@ -110,7 +113,13 @@ const deletePatient = async (req, res) => {
 
 const totalPatients = async (req, res) => {
   try {
-    const total = await Patient.countDocuments({ role: "PATIENT" });
+    const role = req.user?.role;
+    console.log(role);
+    if (role === "PATIENT") {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
+    const total = await Patient.countDocuments();
     res.json(total);
   } catch (error) {
     res
@@ -121,7 +130,7 @@ const totalPatients = async (req, res) => {
 
 const getMedicalReports = async (req, res) => {
   try {
-    const patient_id = req.params.id;
+    const patient_id = req.params?.id;
 
     const medicalRecords =
       await Patient.findById(patient_id).populate("medicalRecords");
@@ -139,4 +148,12 @@ const getMedicalReports = async (req, res) => {
   }
 };
 
-export { getPatients, getPatientById, updatePatient, deletePatient , addPatient};
+export {
+  getPatients,
+  getPatientById,
+  updatePatient,
+  deletePatient,
+  addPatient,
+  totalPatients,
+  getMedicalReports,
+};

@@ -6,13 +6,14 @@ const doctorSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      immutable: true,
     },
 
     specialization: [String],
-    experience: Number,
+    experience: { type: Number, min: 0, max: 70 },
     qualification: String,
     hospitalName: String,
-    licenseNumber: String,
+    licenseNumber: { type: String, unique: true, immutable: true },
 
     consultationFee: Number,
 

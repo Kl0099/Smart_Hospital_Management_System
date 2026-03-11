@@ -6,8 +6,9 @@ const patientSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      immutable: true,
     },
-    age: { type: Number, required: true },
+    age: { type: Number, required: true, min: 0, max: 130 },
     gender: { type: String, enum: ["Male", "Female", "Other"], required: true },
     dateOfBirth: { type: Date, required: true },
     address: { type: String, required: true },
@@ -19,7 +20,11 @@ const patientSchema = new mongoose.Schema(
       enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
     },
     emergencyContactName: { type: String },
-    emergencyContactPhone: { type: Number },
+    emergencyContactPhone: {
+      type: String,
+      required: true,
+      match: [/^\d{10}$/, "Phone number must be exactly 10 digits"],
+    },
     emergencyContactRelation: { type: String },
     medicalRecords: [
       { type: mongoose.Schema.Types.ObjectId, ref: "MedicalRecord" },
@@ -27,9 +32,10 @@ const patientSchema = new mongoose.Schema(
     appointments: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Appointment" },
     ],
+    admissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Admission" }],
     bills: [{ type: mongoose.Schema.Types.ObjectId, ref: "Bill" }],
   },
   { timestamps: true },
 );
 
-export default mongoose.model("Patient" , patientSchema);
+export default mongoose.model("Patient", patientSchema);
